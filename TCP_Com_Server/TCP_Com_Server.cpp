@@ -28,6 +28,7 @@ int main()
 	// 연결 확인(listen)
 	SOCKADDR_IN servAddr; // IPv4 주소 정보를 담는 구조체 (IP + Port 저장하는 통)
 	ZeroMemory(&servAddr, sizeof(servAddr)); // ZeroMemory(주소, 크기); 사실상 초기화 부분 (구조체를 0으로 초기화해서 안전하게 함.)
+
 	servAddr.sin_family = AF_INET; // IPv4 주소 체계 (참고: IPv6: AF_INET6)
 	servAddr.sin_port = htons(PORT); // htons 쓰는 이유: 컴퓨터는 보통 Little Endian, 네트워크는 Big Endian, 그래서 변환이 필요함.
 	servAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY); // 모든 IP에서 들어오는 요청을 받겠다는 의미.
@@ -89,7 +90,6 @@ int main()
 			// 그게 아니면, 클라이언트가 정상적으로 연결을 끊음.
 			else if (retval == 0)
 				break;
-			buf[retval] = '\0'; // 문자열 끝 표시
 
 			char ipStr[INET_ADDRSTRLEN];
 			// IP 변환을 따로 한 후에 ipstr 변수에 저장 함.
