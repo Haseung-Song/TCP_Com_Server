@@ -1,14 +1,13 @@
-﻿
-// TCP_Com_Server.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+﻿// TCP_Com_Server.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
 //
 
 #include <Winsock2.h>
 #include <ws2tcpip.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PORT 2000 // [클라이언트 UI] Port와 맞춤
+// [클라이언트 UI] IP, Port와 맞춤
+#define PORT 2000
 #define BUFSIZE 512
 
 int main()
@@ -31,14 +30,12 @@ int main()
 	servAddr.sin_family = AF_INET; // IPv4 주소 체계 (참고: IPv6: AF_INET6)
 	servAddr.sin_port = htons(PORT); // htons 쓰는 이유: 컴퓨터는 보통 Little Endian, 네트워크는 Big Endian, 그래서 변환이 필요함.
 	servAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY); // 모든 IP에서 들어오는 요청을 받겠다는 의미.
-
 	// 서버를 특정 포트에 바인딩해서 외부 접속 받을 준비를 함.
 	if (bind(listenSocket, (SOCKADDR*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR) // bind(소켓, 주소정보, 크기) 메서드
 	{
 		closesocket(listenSocket);
 		return -1;
 	}
-
 	// bind() 단계까지 끝난 소켓이므로, 이제 "서버 역할"할 준비된 상태
 	retval = listen(listenSocket, SOMAXCONN); // 이 소켓을 클라이언트 연결 대기 상태로 (SOMAXCONN: 동시에 대기 가능한 최대 연결 요청 수)
 	if (retval == SOCKET_ERROR)
@@ -52,7 +49,6 @@ int main()
 	SOCKADDR_IN clientAddr; // 접속한 클라이언트의 IP / Port 정보 담는 구조체
 	int length; // 구조체 크기 전달용
 	char buf[BUFSIZE + 1]; // 데이터 받을 버퍼
-
 	// 서버는 클라이언트 통신을 계속 기다려야 하니까 종료 없이 반복
 	while (1)
 	{
@@ -122,7 +118,8 @@ int main()
 			}
 
 		}
-		closesocket(clientSocket); // 클라이언트와 연결 종료!
+		// 클라이언트와 연결 종료!
+		closesocket(clientSocket);
 	}
 	WSACleanup(); // Winsock 전체 종료 (서버 종료 시, 1번만 수행)
 	return 0;
